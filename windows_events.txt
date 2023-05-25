@@ -1,0 +1,31 @@
+https://ponderthebits.com/2018/02/windows-rdp-related-event-logs-identification-tracking-and-investigation/
+
+Other RDP References:
+https://www.hecfblog.com/2018/10/daily-blog-516-forensic-lunch-test.html
+https://www.hecfblog.com/2018/10/daily-blog-517-forensic-lunch-test.html
+https://www.hecfblog.com/2018/10/daily-blog-518-forensic-lunch-test.html
+
+Event Log: Microsoft-Windows-TerminalServices-RemoteConnectionManager%4Operational.evtx
+Event IDs:
+    1149 - Terminal Services: "User authentication succeeded"
+    21 - "Remote Desktop Services: Session logon succeeded:"
+    22 - "Remote Desktop Services: Shell start notification received:"
+    23 - "Remote Desktop Services: Session logoff succeeded:"
+    24 - "Remote Desktop Services: Session has been disconnected:"
+    25 - "Remote Desktop Services: Session reconnection succeeded:"
+    39 - "Session <X> has been disconnected by session <Y>"
+    40 - "Session <X> has been disconnected, reason code <Z>"
+
+Event Log:%SystemRoot%\System32\Winevt\Logs\Security.evtx
+Event IDs:
+    4624 - "An account was successfully logged on"
+    4625 - "An account failed to log on"
+    4634 - "An account was logged off."
+    4647 - "User initiated logoff:
+    4648 - "A logon was attempted using explicit credentials"
+    4778 - "A session was reconnected to a Window Station."
+    4779 - "A session was disconnected from a Window Station."
+
+Event Log: %SystemRoot%\System32\Winevt\Logs\System.evtx
+Event IDs:
+    9009 - "The Desktop Window Manager has exited with code (<X>)." (RDP desktop GUI Shutdown)

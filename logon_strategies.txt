@@ -1,0 +1,145 @@
+##Strategies used to answer these questions:
+
+- Indiscriminate Lateral Movement
+- Targeted Lateral Movement
+- Impossible Travel
+- Brute Force 
+- User Account Guessing
+- Concurrent Logons
+- User Switching
+- Share Enumeration
+- Non-Badged User Logon
+
+###Data Fields:
+- Time
+- Source - Origin network transaction 
+- Destination - End location of a network transaction 
+- User 
+- Success/Failure
+- Logon Type [Logon Type - Application] - Logon type indicates the type of logon per application e.g. [Type 10 - Remote Desktop Protocol]
+- Badge Access Data 
+- Requested Share Name
+
+##Direct Evidence Category an Data Sources Where it Can Collect
+
+###Time
+     Badge Logs 
+     Host-Event Logs 
+     Linux Auth Logs 
+     Netflow
+     Firewall
+
+###Source
+     Host-Event Logs
+     Linux Auth Logs 
+     Netflow
+     Firewall
+
+###Dest
+     Host-Event Logs
+     Linux Auth Logs 
+     Netflow
+     Firewall
+
+###User
+     Host-Event Logs
+     Linux Auth Logs 
+
+###Success/Failure
+     Host-Event Logs
+     Linux Auth Logs 
+
+###Logon Type  
+     Windows Event Logs
+     Linux Auth Logs 
+
+
+##Analysis/Detection Strategies 
+
+Indiscriminate Lateral Movement:
+If account X authenticates to Y number of systems in Z time from a single system
+    
+     Information Needed:
+         Authentication Logs:  Time, Source, Dest, User, Success/Failure, Logon Type
+
+Targeted Lateral Movement:
+Account X logs into system B from system A, then logs into system C from system B. 
+
+     Information Needed:
+         Authentication Logs:  Time, Source, Dest, User, Success/Failure, Logon Type
+
+Impossible Travel:
+Account X logs in from locate A and then location B. The distance between location A and location B is to great to have been traversed during the difference in time between both logins. 
+
+     Information Needed:
+         Authentication Logs:  Time, Source, Dest, User, Success/Failure, Logon Type
+
+Brute Force:
+Account X has Y number of failed attempts in Z time followed by a successful logon
+
+     Information Needed:
+         Authentication Logs: Time, Source, Dest, User, Success/Failure, Logon Type
+
+User Account Guessing:
+Source machine X made authentication requests using Y number of unique accounts to multiple machines in a given period of time.
+
+     Information Needed:
+         Authentication Logs: Time, Source, Dest, User, Success/Failure, Logon Type
+
+Concurrent Logons 
+A single user logged into multiple machines. 
+
+     Information Needed:
+         Authentication Logs: Time, Source, Dest, User, Success/Failure, Logon Type
+
+User Switching 
+User A logs into System X, then logs into System Y as User B
+
+     Information Needed:
+         Authentication Logs: Time, Source, Dest, User, Success/Failure, Logon Type
+
+Share Enumeration
+If user X attempts to connect to multiple hidden shares (e.g. admin$, c$, IPC$) on a single system or multiple systems
+Data required: Endpoint windows event logs
+
+     Information Needed:
+         Authentication Logs: Time, Source, Dest, User, Success/Failure, Logon Type
+         Event/File Access Logs: Time, Dest, Share Name
+       
+  Non-badged user logon (account sharing)
+If user X logs onto system with Type 2 (interactive logon) but has not badged into the building for the day
+
+     Information Needed:
+         Authentication Logs: Time, Source, Dest, User, Success/Failure, Logon Type,
+         Building Access Logs: Time, Closest Previous Badge Access
+
+--------------------------------------------------------------------------------------------------------------------------------------------
+Comparison Over Time - (Machine Learning) 
+These are raw notes
+
+’Simple’ machine learning approach, with inputs:
+
+-Time, resource logged into, user switched to, user, duration (needs logoff event), where logging in from, type of login
+Can make the features over a specified time window:
+
+- # logins, stdev time (logins), avg type vector, most seen other user, 2nd most seen other user, most common resource accessed, ??better way to measure other users seen??, mean time(logins), sqrt(type vector), avg(login vector)
+type vector = dummy features = [fun(PCs), num(DCs), num(servers), num(DBs), …]
+login vector = dummy features = [2, 3, 10]
+ 
+Lots of thoughts need to go into how this classifier would ‘learn’, how it would weigh older windows compared to newer ones
+ 
+the ’simple’ machine learning approach could focus on one of these features and not make it so complicated
+ 
+2) ‘More complicated' ML approach, same as above but more features, might be too complicated
+ 
+3) Recording averages or lists on things like where a user has remote accessed from for comparisons
+- Need to think more about how to implement this
+ 
+The two best ones for 1) and 2) would be time of activity, method of login and assets logged into
+
+Requested Share Name
+     Host-Event Logs
+     Linux Auth Logs 
+  
+Last Badged
+     Badging Logs?
